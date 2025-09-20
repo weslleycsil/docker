@@ -1,0 +1,58 @@
+version: "3.7"
+
+services: 
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    networks:
+      - backend
+    environment:
+      TZ: America/Sao_Paulo
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: syslog
+      MYSQL_USER: rsyslog
+      MYSQL_PASSWORD: rsyslogpass
+    volumes:
+      - mysql-data:/var/lib/mysql
+  
+  syslogserver: 
+    image: weslleycsil/rsyslog-mysql:amd64-latest
+    container_name: syslog
+    hostname: syslog 
+    restart: always
+    ports: 
+      - 514:514
+      - 514:514/udp
+    networks:
+      - backend
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes: 
+      - /home/srvnetwork/rsyslog.conf:/etc/rsyslog.d/mysql.conf
+      - rsyslog-logs:/var/log
+    cap_add:
+      - SYSLOG
+
+  webapp:
+    image: vsc55/loganalyzer:latest
+    container_name: LogAnalyzer
+    restart: always
+    ports:
+      - "8080:80"
+    networks:
+      - backend
+    environment:
+      - TZ=America/Sao_Paulo
+      - HTTP_PORT=80
+    volumes:
+      - analyze-data:/data
+      - rsyslog-logs:/logs
+      
+volumes:
+  analyze-data:
+  rsyslog-logs:
+  mysql-data:
+
+networks:
+  backend:
