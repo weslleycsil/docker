@@ -1,4 +1,10 @@
 # Projeto Rsyslog em Docker
 
 
-Trasferir sql para dentro do mysql: docker exec -i  5bf8da12d1b5 mysql -uroot -prootpass syslog < rsyslog.sql
+Trasferir sql para dentro do mysql: docker exec -i  nomedocontainer mysql -uroot -prootpass syslog < rsyslog.sql
+
+Documentação:
+https://www.rsyslog.com/doc/containers/index.html
+
+Projeto no Github:
+https://github.com/rsyslog/rsyslog/tree/main/packaging/docker
